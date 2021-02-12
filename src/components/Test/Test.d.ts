@@ -1,10 +1,10 @@
 import * as React from "react";
+import { FormsyInjectedProps } from "formsy-react";
 
-export interface TimelineDotPropsVariantOverrides {}
-export type TimelineDotVariantDefaults = Record<"filled" | "outlined", true>;
+export interface TestPropsVariantOverrides {}
+export type TestVariantDefaults = Record<"filled" | "outlined", true>;
 
-export interface TimelineDotProps
-  extends React.HTMLAttributes<HTMLSpanElement> {
+export interface TestProps extends React.HTMLAttributes<HTMLSpanElement> {
   /**
    * The content of the component.
    */
@@ -37,16 +37,10 @@ export interface TimelineDotProps
    * @default 'grey'
    */
   color?: "inherit" | "primary" | "secondary" | "grey";
-  /**
-   * The dot can appear filled or outlined.
-   * @default 'filled'
-   */
-  // variant?: OverridableStringUnion<TimelineDotVariantDefaults, TimelineDotPropsVariantOverrides>;
+  variant?: FormsyInjectedProps<string | number>;
 }
 
-export type TimelineDotClassKey = keyof NonNullable<
-  TimelineDotProps["classes"]
->;
+export type TestClassKey = keyof NonNullable<TestProps["classes"]>;
 
 /**
  *
@@ -56,6 +50,6 @@ export type TimelineDotClassKey = keyof NonNullable<
  *
  * API:
  *
- * - [TimelineDot API](https://material-ui.com/api/timeline-dot/)
+ * - [Test API](https://material-ui.com/api/timeline-dot/)
  */
-export default function TimelineDot(props: TimelineDotProps): JSX.Element;
+export default function Test(props: TestProps): JSX.Element;

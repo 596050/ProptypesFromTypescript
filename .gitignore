@@ -15,6 +15,6 @@
 /test/selenium-output
 /tmp
 build
-node_modules/**/*
+node_modules
 package-lock.json
 size-snapshot.json

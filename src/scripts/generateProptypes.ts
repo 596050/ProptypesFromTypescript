@@ -240,7 +240,7 @@ async function generateProptypes(
       const ignoreGenerated =
         previous !== undefined &&
         previous.startsWith('PropTypes /* @typescript-to-proptypes-ignore */');
-      // console.log('prop, previous, generated', prop, previous, generated);
+      console.log('prop, previous, generated', prop, previous, generated);
       // @ts-ignore
       // console.log('prop', prop?.propType);
 
@@ -289,7 +289,7 @@ async function generateProptypes(
       return shouldDocument;
     },
   });
-
+  console.log('result', result);
   if (!result) {
     return GenerateResult.Failed;
   }
