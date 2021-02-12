@@ -1,0 +1,20 @@
+# It is best to ignoring editor and system files in a local .gitignore configuration file.
+# However, in order to prevent issues, they are ignored here.
+.DS_STORE
+.idea
+.vscode
+*.log
+*.tsbuildinfo
+/.eslintcache
+/.nyc_output
+/benchmark/**/dist
+/coverage
+/examples/**/.cache
+/test/regressions/build
+/test/regressions/screenshots
+/test/selenium-output
+/tmp
+build
+node_modules/**/*
+package-lock.json
+size-snapshot.json
