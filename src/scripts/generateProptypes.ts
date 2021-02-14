@@ -1,16 +1,17 @@
-import * as path from 'path';
-import glob from 'fast-glob';
-import * as fse from 'fs-extra';
-import * as ttp from 'typescript-to-proptypes';
-import * as prettier from 'prettier';
-import * as _ from 'lodash';
-const os = require('os');
+import * as path from "path";
+import glob from "fast-glob";
+import * as fse from "fs-extra";
+import * as ttp from "typescript-to-proptypes";
+// import * as ttp from "../ts-pt";
+import * as prettier from "prettier";
+import * as _ from "lodash";
+const os = require("os");
 
 const { flatten } = _;
 
 const fixBabelIssuesRegExp = new RegExp(/(?<=(\/>)|,)(\r?\n){2}/g);
 function fixBabelGeneratorIssues(source: string) {
-  return source.replace(fixBabelIssuesRegExp, '\n');
+  return source.replace(fixBabelIssuesRegExp, "\n");
 }
 
 function sortBreakpointsLiteralByViewportAscending(a: ttp.LiteralNode, b: ttp.LiteralNode) {
@@ -20,10 +21,10 @@ function sortBreakpointsLiteralByViewportAscending(a: ttp.LiteralNode, b: ttp.Li
   return breakpointOrder.indexOf(a.value) - breakpointOrder.indexOf(b.value);
 }
 // Custom order of literal unions by component
-const getSortLiteralUnions: ttp.InjectOptions['getSortLiteralUnions'] = (component, propType) => {
+const getSortLiteralUnions: ttp.InjectOptions["getSortLiteralUnions"] = (component, propType) => {
   if (
-    component.name === 'Hidden' &&
-    (propType.name === 'initialWidth' || propType.name === 'only')
+    component.name === "Hidden" &&
+    (propType.name === "initialWidth" || propType.name === "only")
   ) {
     return sortBreakpointsLiteralByViewportAscending;
   }
@@ -32,27 +33,27 @@ const getSortLiteralUnions: ttp.InjectOptions['getSortLiteralUnions'] = (compone
 };
 
 const useExternalPropsFromInputBase = [
-  'autoComplete',
-  'autoFocus',
-  'color',
-  'defaultValue',
-  'disabled',
-  'endAdornment',
-  'error',
-  'id',
-  'inputProps',
-  'inputRef',
-  'margin',
-  'maxRows',
-  'minRows',
-  'name',
-  'onChange',
-  'placeholder',
-  'readOnly',
-  'required',
-  'rows',
-  'startAdornment',
-  'value',
+  "autoComplete",
+  "autoFocus",
+  "color",
+  "defaultValue",
+  "disabled",
+  "endAdornment",
+  "error",
+  "id",
+  "inputProps",
+  "inputRef",
+  "margin",
+  "maxRows",
+  "minRows",
+  "name",
+  "onChange",
+  "placeholder",
+  "readOnly",
+  "required",
+  "rows",
+  "startAdornment",
+  "value",
 ];
 
 /**
@@ -63,59 +64,59 @@ const useExternalPropsFromInputBase = [
  * of dynamically loading them. At that point this list should be removed.
  * TODO: typecheck values
  */
-const useExternalDocumentation: Record<string, '*' | string[]> = {
-  Button: ['disableRipple'],
+const useExternalDocumentation: Record<string, "*" | string[]> = {
+  Button: ["disableRipple"],
   // `classes` is always external since it is applied from a HOC
   // In DialogContentText we pass it through
   // Therefore it's considered "unused" in the actual component but we still want to document it.
-  DialogContentText: ['classes'],
-  DatePicker: '*',
-  MobileDatePicker: '*',
-  StaticDatePicker: '*',
-  DesktopDatePicker: '*',
-  TimePicker: '*',
-  MobileTimePicker: '*',
-  StaticTimePicker: '*',
-  DesktopTimePicker: '*',
-  DateTimePicker: '*',
-  MobileDateTimePicker: '*',
-  StaticDateTimePicker: '*',
-  DesktopDateTimePicker: '*',
-  DateRangePicker: '*',
-  MobileDateRangePicker: '*',
-  StaticDateRangePicker: '*',
-  DesktopDateRangePicker: '*',
+  DialogContentText: ["classes"],
+  DatePicker: "*",
+  MobileDatePicker: "*",
+  StaticDatePicker: "*",
+  DesktopDatePicker: "*",
+  TimePicker: "*",
+  MobileTimePicker: "*",
+  StaticTimePicker: "*",
+  DesktopTimePicker: "*",
+  DateTimePicker: "*",
+  MobileDateTimePicker: "*",
+  StaticDateTimePicker: "*",
+  DesktopDateTimePicker: "*",
+  DateRangePicker: "*",
+  MobileDateRangePicker: "*",
+  StaticDateRangePicker: "*",
+  DesktopDateRangePicker: "*",
   FilledInput: useExternalPropsFromInputBase,
-  IconButton: ['disableRipple'],
+  IconButton: ["disableRipple"],
   Input: useExternalPropsFromInputBase,
-  MenuItem: ['dense'],
+  MenuItem: ["dense"],
   OutlinedInput: useExternalPropsFromInputBase,
-  Radio: ['disableRipple', 'id', 'inputProps', 'inputRef', 'required'],
-  Checkbox: ['defaultChecked'],
+  Radio: ["disableRipple", "id", "inputProps", "inputRef", "required"],
+  Checkbox: ["defaultChecked"],
   Switch: [
-    'checked',
-    'defaultChecked',
-    'disabled',
-    'disableRipple',
-    'edge',
-    'id',
-    'inputProps',
-    'inputRef',
-    'onChange',
-    'required',
-    'value',
+    "checked",
+    "defaultChecked",
+    "disabled",
+    "disableRipple",
+    "edge",
+    "id",
+    "inputProps",
+    "inputRef",
+    "onChange",
+    "required",
+    "value",
   ],
   SwipeableDrawer: [
-    'anchor',
-    'hideBackdrop',
-    'ModalProps',
-    'PaperProps',
-    'transitionDuration',
-    'variant',
+    "anchor",
+    "hideBackdrop",
+    "ModalProps",
+    "PaperProps",
+    "transitionDuration",
+    "variant",
   ],
-  Tab: ['disableRipple'],
-  TextField: ['margin'],
-  ToggleButton: ['disableRipple'],
+  Tab: ["disableRipple"],
+  TextField: ["margin"],
+  ToggleButton: ["disableRipple"],
 };
 
 enum GenerateResult {
@@ -128,13 +129,13 @@ enum GenerateResult {
 
 const todoComponents: string[] = [];
 
-const __dirname = path.resolve(path.dirname(''));
+const __dirname = path.resolve(path.dirname(""));
 // console.log("__dirname", __dirname);
 
 const allFiles = async () =>
   Promise.all(
-    [path.resolve(__dirname, 'src/components')].map(async (folderPath) => {
-      const g = glob('src/**/*.{ts,tsx,d.ts}');
+    [path.resolve(__dirname, "src/components")].map(async (folderPath) => {
+      const g = glob("src/**/*.{ts,tsx,d.ts}");
       // {
       //   absolute: true,
       //   cwd: folderPath,
@@ -149,7 +150,7 @@ const a = allFiles().then((files) => {
     // Example: Modal/ModalManager.d.ts
     .filter((filePath) => {
       const folderName = path.basename(path.dirname(filePath));
-      const fileName = path.basename(filePath).replace(/(\.d\.ts|\.tsx|\.ts)/g, '');
+      const fileName = path.basename(filePath).replace(/(\.d\.ts|\.tsx|\.ts)/g, "");
 
       return fileName === folderName;
     });
@@ -159,7 +160,7 @@ const a = allFiles().then((files) => {
 const run = async () => {
   a.then((files) => {
     const tsconfig = ttp.loadConfig(
-      path.resolve(__dirname, './src/scripts/tsconfig.generate.json'),
+      path.resolve(__dirname, "./src/scripts/tsconfig.generate.json"),
     );
     // May not be able to understand all files due to mismatch in TS versions.
     // Check `programm.getSyntacticDiagnostics()` if referenced files could not be compiled.
@@ -167,16 +168,16 @@ const run = async () => {
     // console.log("program", program);
 
     const promises = files.map<Promise<GenerateResult>>(async (tsFile) => {
-      const componentName = path.basename(tsFile).replace(/(\.d\.ts|\.tsx|\.js)/g, '');
+      const componentName = path.basename(tsFile).replace(/(\.d\.ts|\.tsx|\.js)/g, "");
 
       if (todoComponents.includes(componentName)) {
         return GenerateResult.TODO;
       }
 
-      const sourceFile = tsFile.includes('.d.ts') ? tsFile.replace('.d.ts', '.js') : tsFile;
+      const sourceFile = tsFile.includes(".d.ts") ? tsFile.replace(".d.ts", ".js") : tsFile;
       return generateProptypes(program, sourceFile, tsFile);
     });
-    console.log('promises', promises);
+    console.log("promises", promises);
   });
 };
 
@@ -187,7 +188,7 @@ async function generateProptypes(
 ): Promise<GenerateResult> {
   const proptypes = ttp.parseFromProgram(tsFile, program, {
     shouldResolveObject: ({ name }) => {
-      if (name.toLowerCase().endsWith('classes') || name === 'theme' || name.endsWith('Props')) {
+      if (name.toLowerCase().endsWith("classes") || name === "theme" || name.endsWith("Props")) {
         return false;
       }
       return undefined;
@@ -211,7 +212,7 @@ async function generateProptypes(
   //   });
   // });
 
-  const sourceContent = await fse.readFile(sourceFile, 'utf8');
+  const sourceContent = await fse.readFile(sourceFile, "utf8");
 
   const isTsFile = /(\.(ts|tsx))/.test(sourceFile);
 
@@ -226,21 +227,21 @@ async function generateProptypes(
       filename: sourceFile,
     },
     comment: [
-      '----------------------------- Warning --------------------------------',
-      '| These PropTypes are generated from the TypeScript type definitions |',
+      "----------------------------- Warning --------------------------------",
+      "| These PropTypes are generated from the TypeScript type definitions |",
       isTsFile
         ? '|     To update them edit TypeScript types and run "yarn proptypes"  |'
         : '|     To update them edit the d.ts file and run "yarn proptypes"     |',
-      '----------------------------------------------------------------------',
-    ].join('\n'),
+      "----------------------------------------------------------------------",
+    ].join("\n"),
 
     getSortLiteralUnions,
     reconcilePropTypes: (prop, previous, generated) => {
-      const usedCustomValidator = previous !== undefined && !previous.startsWith('PropTypes');
+      const usedCustomValidator = previous !== undefined && !previous.startsWith("PropTypes");
       const ignoreGenerated =
         previous !== undefined &&
-        previous.startsWith('PropTypes /* @typescript-to-proptypes-ignore */');
-      console.log('prop, previous, generated', prop, previous, generated);
+        previous.startsWith("PropTypes /* @typescript-to-proptypes-ignore */");
+      console.log("prop, previous, generated", prop, previous, generated);
       // @ts-ignore
       // console.log('prop', prop?.propType);
 
@@ -248,8 +249,8 @@ async function generateProptypes(
         ignoreGenerated &&
         // `ignoreGenerated` implies that `previous !== undefined`
         previous!
-          .replace('PropTypes /* @typescript-to-proptypes-ignore */', 'PropTypes')
-          .replace(/\s/g, '') === generated.replace(/\s/g, '')
+          .replace("PropTypes /* @typescript-to-proptypes-ignore */", "PropTypes")
+          .replace(/\s/g, "") === generated.replace(/\s/g, "")
       ) {
         throw new Error(
           `Unused \`@typescript-to-proptypes-ignore\` directive for prop '${prop.name}'.`,
@@ -264,7 +265,7 @@ async function generateProptypes(
       return generated;
     },
     shouldInclude: ({ component, prop }) => {
-      if (prop.name === 'children') {
+      if (prop.name === "children") {
         return true;
       }
       let shouldDocument;
@@ -280,7 +281,7 @@ async function generateProptypes(
       const { name: componentName } = component;
       if (
         useExternalDocumentation[componentName] &&
-        (useExternalDocumentation[componentName] === '*' ||
+        (useExternalDocumentation[componentName] === "*" ||
           useExternalDocumentation[componentName].includes(prop.name))
       ) {
         shouldDocument = true;
@@ -289,7 +290,7 @@ async function generateProptypes(
       return shouldDocument;
     },
   });
-  console.log('result', result);
+  console.log("result", result);
   if (!result) {
     return GenerateResult.Failed;
   }
@@ -297,7 +298,7 @@ async function generateProptypes(
   // console.log('path.join(__dirname, "./src/scripts/prettier.config.js")', path.join(__dirname, "./src/scripts/prettier.config.js"))
 
   const prettierConfig = prettier.resolveConfig.sync(process.cwd(), {
-    config: path.join(__dirname, './src/scripts/prettier.config.js'),
+    config: path.join(__dirname, "./src/scripts/prettier.config.js"),
   });
 
   const prettified = prettier.format(result, {
