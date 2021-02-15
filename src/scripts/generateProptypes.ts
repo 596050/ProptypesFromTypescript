@@ -56,69 +56,6 @@ const useExternalPropsFromInputBase = [
   "value",
 ];
 
-/**
- * A map of components and their props that should be documented
- * but are not used directly in their implementation.
- *
- * TODO: In the future we want to remove them from the API docs in favor
- * of dynamically loading them. At that point this list should be removed.
- * TODO: typecheck values
- */
-const useExternalDocumentation: Record<string, "*" | string[]> = {
-  Button: ["disableRipple"],
-  // `classes` is always external since it is applied from a HOC
-  // In DialogContentText we pass it through
-  // Therefore it's considered "unused" in the actual component but we still want to document it.
-  DialogContentText: ["classes"],
-  DatePicker: "*",
-  MobileDatePicker: "*",
-  StaticDatePicker: "*",
-  DesktopDatePicker: "*",
-  TimePicker: "*",
-  MobileTimePicker: "*",
-  StaticTimePicker: "*",
-  DesktopTimePicker: "*",
-  DateTimePicker: "*",
-  MobileDateTimePicker: "*",
-  StaticDateTimePicker: "*",
-  DesktopDateTimePicker: "*",
-  DateRangePicker: "*",
-  MobileDateRangePicker: "*",
-  StaticDateRangePicker: "*",
-  DesktopDateRangePicker: "*",
-  FilledInput: useExternalPropsFromInputBase,
-  IconButton: ["disableRipple"],
-  Input: useExternalPropsFromInputBase,
-  MenuItem: ["dense"],
-  OutlinedInput: useExternalPropsFromInputBase,
-  Radio: ["disableRipple", "id", "inputProps", "inputRef", "required"],
-  Checkbox: ["defaultChecked"],
-  Switch: [
-    "checked",
-    "defaultChecked",
-    "disabled",
-    "disableRipple",
-    "edge",
-    "id",
-    "inputProps",
-    "inputRef",
-    "onChange",
-    "required",
-    "value",
-  ],
-  SwipeableDrawer: [
-    "anchor",
-    "hideBackdrop",
-    "ModalProps",
-    "PaperProps",
-    "transitionDuration",
-    "variant",
-  ],
-  Tab: ["disableRipple"],
-  TextField: ["margin"],
-  ToggleButton: ["disableRipple"],
-};
-
 enum GenerateResult {
   Success,
   Skipped,
@@ -227,12 +164,10 @@ async function generateProptypes(
       filename: sourceFile,
     },
     comment: [
-      "----------------------------- Warning --------------------------------",
-      "| These PropTypes are generated from the TypeScript type definitions |",
-      isTsFile
-        ? '|     To update them edit TypeScript types and run "yarn proptypes"  |'
-        : '|     To update them edit the d.ts file and run "yarn proptypes"     |',
-      "----------------------------------------------------------------------",
+      "-------------- !!!! --------------",
+      "These PropTypes are generated",
+      'Update TypeScript types and run "yarn proptypes"',
+      "-------------- !!!! --------------",
     ].join("\n"),
 
     getSortLiteralUnions,
@@ -279,13 +214,13 @@ async function generateProptypes(
       });
 
       const { name: componentName } = component;
-      if (
-        useExternalDocumentation[componentName] &&
-        (useExternalDocumentation[componentName] === "*" ||
-          useExternalDocumentation[componentName].includes(prop.name))
-      ) {
-        shouldDocument = true;
-      }
+      // if (
+      //   useExternalDocumentation[componentName] &&
+      //   (useExternalDocumentation[componentName] === "*" ||
+      //     useExternalDocumentation[componentName].includes(prop.name))
+      // ) {
+      //   shouldDocument = true;
+      // }
 
       return shouldDocument;
     },
