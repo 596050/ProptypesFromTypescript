@@ -2,7 +2,7 @@ import * as path from "path";
 import glob from "fast-glob";
 import * as fse from "fs-extra";
 import * as ttp from "typescript-to-proptypes";
-// import * as ttp from "../ts-pt";
+// import * as ttp from "../ts-pt/typescript-to-proptypes";
 import * as prettier from "prettier";
 import * as _ from "lodash";
 const os = require("os");
@@ -108,13 +108,17 @@ const run = async () => {
       const componentName = path.basename(tsFile).replace(/(\.d\.ts|\.tsx|\.js)/g, "");
 
       if (todoComponents.includes(componentName)) {
+        // console.log("componentName", componentName);
         return GenerateResult.TODO;
       }
 
-      const sourceFile = tsFile.includes(".d.ts") ? tsFile.replace(".d.ts", ".js") : tsFile;
+      // console.log("tsFile", tsFile);
+      const sourceFile = tsFile.includes(".d.ts") ? tsFile.replace(".d.ts", ".tsx") : tsFile;
+
+      // console.log("shouldDocument = true;", sourceFile, tsFile);
       return generateProptypes(program, sourceFile, tsFile);
     });
-    console.log("promises", promises);
+    // console.log("promises", promises);
   });
 };
 
@@ -157,6 +161,8 @@ async function generateProptypes(
 
   // const generatedForTypeScriptFile = sourceFile === tsFile;
 
+  // console.log("sourceContent", sourceContent, sourceFile);
+
   const result = ttp.inject(proptypes, sourceContent, {
     // disablePropTypesTypeChecking: generatedForTypeScriptFile,
     removeExistingPropTypes: true,
@@ -176,7 +182,7 @@ async function generateProptypes(
       const ignoreGenerated =
         previous !== undefined &&
         previous.startsWith("PropTypes /* @typescript-to-proptypes-ignore */");
-      console.log("prop, previous, generated", prop, previous, generated);
+      // console.log("prop, previous, generated", prop, previous, generated);
       // @ts-ignore
       // console.log('prop', prop?.propType);
 
@@ -213,6 +219,8 @@ async function generateProptypes(
         }
       });
 
+      shouldDocument = true;
+
       const { name: componentName } = component;
       // if (
       //   useExternalDocumentation[componentName] &&
@@ -225,7 +233,7 @@ async function generateProptypes(
       return shouldDocument;
     },
   });
-  console.log("result", result);
+  // console.log("result", result);
   if (!result) {
     return GenerateResult.Failed;
   }
